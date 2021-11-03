@@ -1,0 +1,131 @@
+footer {
+  font-size: 10px;
+  padding-top: 20px;
+}
+
+body {
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h5 {
+  margin-bottom: 0px;
+}
+
+#content {
+  padding-top: 20px;
+}
+
+.filters-container {
+  display: flex;
+  justify-content: center;
+}
+
+.filters-box {
+  position: relative;
+  background-color: aliceblue;
+  padding: 10px 20px;
+  border-radius: 0.375rem;
+  border: 1px grey solid;
+  min-width: 42rem;
+  margin-bottom: 30px;
+}
+
+.filters-top {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin: 10px 0px;
+}
+
+.filter-show-button {
+  margin-right: 10px;
+  margin-bottom: 3px;
+  font-size: small;
+  background-color: transparent;
+  border: none;
+  padding: 0px;
+  font-weight: 600;
+  color: dodgerblue;
+}
+
+.number-input {
+  width: 5rem;
+}
+
+.label-line {
+  margin: 10px 0px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.change-button,
+.filter-button {
+  background-color: lightsteelblue;
+  padding: 5px 10px;
+  border: 1px grey solid;
+  margin: 3px 8px;
+  border-radius: 0.25rem;
+  box-shadow: 1px 1px 4px 0 rgba(149, 163, 167, 0.5);
+}
+
+.filter-button:hover {
+  box-shadow: 3px 3px 4px 0 rgba(149, 163, 167, 0.5);
+}
+
+.change-button {
+  margin: 0px 3px;
+  padding: 2px 8px;
+  background-color: aliceblue;
+}
+
+.loading {
+  position: absolute;
+  text-align: center;
+  bottom: -35px;
+  width: 100%;
+  font-style: italic;
+}
+
+.user-table {
+  display: flex;
+  justify-content: center;
+  margin: 10px 30px;
+}
+
+td,
+th {
+  padding-right: 40px;
+  padding-left: 3px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  min-width: 115px;
+}
+
+th {
+  border-bottom: 1px grey solid;
+}
+
+.user-id {
+  min-width: 170px;
+}
+
+.center {
+  text-align: center;
+}
+
+.higher-width {
+  min-width: 175px;
+}
+
+.check {
+  margin-right: 10px;
+}

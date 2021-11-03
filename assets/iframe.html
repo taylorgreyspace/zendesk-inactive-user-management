@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link href="main.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="filters"></div>
+  <div id="content"></div>
+  <footer>
+    <a href="https://www.greyspaceconsulting.co/get-in-touch" target="_blank">Report bugs</a>
+  </footer>
+
+  <script id="filter-form-template" type="text/x-handlebars-template"> 
+    <div class="filters-container">
+      <div class="filters-box">
+      <div class="filters-top">
+        <h5>Filters</h5>
+        <button class="filter-show-button" id="toggle-filters" type="button">Hide filters</button>
+      </div>
+      
+      <form id="filters-form">
+        <!-- <button type="button" id="create-users">Create fake users</button>
+        <button type="button" id="check-users">Check</button> -->
+        <div class="label-line" id="paid-seats-label">
+         <label for="paid-seats">Show paid seats only</label>
+         <input name="paid-seats"  id="paid-seats" type="checkbox" checked />
+        </div>
+
+        <div class="label-line">
+          <input name="last-login-check"  id="last-login-check" type="checkbox" class="check" checked />
+          <label for="last-login-before">Last login before</label>
+          <input name="last-login-before" id="last-login-before" type="date" value={{last_login_before}} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" placeholder="YYYY-MM-DD" />
+        </div>
+
+        <div class="label-line">
+          <input name="public-comments-check"  id="public-comments-check" class="check" type="checkbox" />
+          <label for="max-public-comments">Less than</label>
+          <input name="max-public-comments" id="max-public-comments" type="number" value={{max_public_comments}} class="number-input" />
+        
+          
+          <label for="public-comments-before">public comments since</label>
+          <input name="public_comments_before" id="public-comments-before" type="date" value={{public_comments_before}} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" placeholder="YYYY-MM-DD" />
+        </div>
+
+        <div class="buttons">
+          <button type="button" id="filter-button" class="filter-button">Filter</button>
+          <button type="button" id="clear-filter-button" class="filter-button">Show all</button>
+        </div>
+      </form>
+
+      <div id="loading-users" class="loading"></div>
+    </div>
+    </div>
+  </script>
+
+  <script id="users-template" type="text/x-handlebars-template">
+    <div class="user-table">
+      <table>
+        <thead>
+          <tr>  
+            <th class="user-id">ID</th>
+            <th class="higher-width">Name</th>
+            <th>Role</th>
+            <th>Role Type</th>
+            <th class="higher-width">Last Login</th>
+            <th>Public Comments</th>
+            <th class="higher-width">Last Comment</th>
+            <th class="center higher-width">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#users}}
+          <tr>
+            <td><a href={{user_href}}>{{id}}</a></td>
+            <td>{{name}}</td>
+            <td>{{role}}</td>
+            <td>{{role_type}}</td>
+            <td>{{last_login_at}}</td>
+            <td class="center">{{number_public_comments}}</td>
+            <td>{{last_comment_at}}</td>
+            <td>
+              <!-- <button id="change-to-light-{{id}}" class="change-to-light change-button" type="button">Light Agent</button> -->
+              <button id="change-to-end-{{id}}" class="change-to-end change-button" type="button">Change to End-User</button>
+            </td>
+          </tr>
+          {{/users}}
+        </tbody>
+      </table>
+    </div>
+    <div id="no-users-msg" class="center"></div>
+  </script>
+    
+  <script id="error-template" type="text/x-handlebars-template">
+    <p>Error: {{status}} {{statusText}}.</p>
+    <p>Description: {{errorDetails}}, {{description}}</p>
+    <p>Please report a bug at the link below.</p>
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+  <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@4.3.3/dist/handlebars.min.js"></script>
+  <script src="main.js" type="module"></script>
+</body>
+
+</html>
+
