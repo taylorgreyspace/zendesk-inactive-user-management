@@ -2,9 +2,8 @@ import { dateMinusOneMonth } from "./dateUtils.js";
 import { updateUser, exportUsers } from "./requests.js";
 import { formatUsers } from "./formatUtils.js";
 
-// const defaultMaxComments = 1;
 const oneMonthAgo = dateMinusOneMonth();
-const isAdmin = true;
+const isAdmin = false;
 
 export function renderError(response) {
   const error_data = {
@@ -30,31 +29,13 @@ export function renderFilterForm() {
   const source = $("#filter-form-template").html();
   const template = Handlebars.compile(source);
   const html = template({
-    // max_public_comments: defaultMaxComments,
     last_login_before: oneMonthAgo,
-    // public_comments_before: oneMonthAgo,
   });
   $("#filters").html(html);
   if (!isAdmin) {
     $("#paid-seats-label").hide();
   }
 }
-
-// export function renderNextPageButton(onNextPage) {
-//   $("#next-page-button").show();
-//   $("#next-page-button").click((e) => {
-//     e.preventDefault();
-//     onNextPage();
-//   });
-// }
-
-// export function renderPrevPageButton(onPrevPage) {
-//   $("#prev-page-button").show();
-//   $("#next-page-button").click((e) => {
-//     e.preventDefault();
-//     onNextPage();
-//   });
-// }
 
 function getCurrentPageNum(data, pageCount) {
   if (!data.previous_page) return 1;
@@ -105,33 +86,20 @@ export function renderFilterButtons(getUsers) {
   $("#filter-button").click((e) => {
     e.preventDefault();
     const lastLoginBefore = $("#last-login-before").val();
-    // const lastLoginChecked = $("#last-login-check").prop("checked");
-
-    // const maxPublicComments = $("#max-public-comments").val();
-    // const publicCommentsBefore = $("#public-comments-before").val();
-    // const publicCommentsChecked = $("#public-comments-check").prop("checked");
-
     const paidSeats = isAdmin ? $("#paid-seats").prop("checked") : true;
 
     getUsers({
       lastLoginBefore: lastLoginBefore,
-      // maxPublicComments: publicCommentsChecked ? maxPublicComments : "",
-      // publicCommentsBefore: publicCommentsChecked ? publicCommentsBefore : "",
       paidSeats,
     });
   });
 
   $("#clear-filter-button").click((e) => {
     e.preventDefault();
-    // $("#last-login-check").prop("checked", false);
-    // $("#public-comments-check").prop("checked", false);
-
     if (isAdmin) $("#paid-seats").prop("checked", false);
 
     getUsers({
-      // maxPublicComments: "",
       lastLoginBefore: "",
-      // publicCommentsBefore: "",
       paidSeats: !isAdmin,
     });
   });

@@ -8,15 +8,12 @@ import { requestUserInfo } from "./requests.js";
 /*
 filters = { 
   lastLoginBefore: string,
-  maxPublicComments: number | "", 
-  publicCommentsBefore: string,
   paidSeats: boolean
 }
 */
 
 $(function () {
   const client = ZAFClient.init();
-  console.log("init init init");
   renderFilterForm();
   renderUserHeaders();
 
