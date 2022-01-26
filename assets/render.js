@@ -1,8 +1,8 @@
 import { dateMinusOneMonth } from "./dateUtils.js";
-import { updateUser } from "./requests.js";
+import { updateUser, exportUsers } from "./requests.js";
 import { formatUsers } from "./formatUtils.js";
 
-const defaultMaxComments = 1;
+// const defaultMaxComments = 1;
 const oneMonthAgo = dateMinusOneMonth();
 const isAdmin = true;
 
@@ -30,13 +30,62 @@ export function renderFilterForm() {
   const source = $("#filter-form-template").html();
   const template = Handlebars.compile(source);
   const html = template({
-    max_public_comments: defaultMaxComments,
+    // max_public_comments: defaultMaxComments,
     last_login_before: oneMonthAgo,
-    public_comments_before: oneMonthAgo,
+    // public_comments_before: oneMonthAgo,
   });
   $("#filters").html(html);
   if (!isAdmin) {
     $("#paid-seats-label").hide();
+  }
+}
+
+// export function renderNextPageButton(onNextPage) {
+//   $("#next-page-button").show();
+//   $("#next-page-button").click((e) => {
+//     e.preventDefault();
+//     onNextPage();
+//   });
+// }
+
+// export function renderPrevPageButton(onPrevPage) {
+//   $("#prev-page-button").show();
+//   $("#next-page-button").click((e) => {
+//     e.preventDefault();
+//     onNextPage();
+//   });
+// }
+
+function getCurrentPageNum(data, pageCount) {
+  if (!data.previous_page) return 1;
+  if (!data.next_page) return pageCount;
+  const nextNum = data.next_page.split("page=")[1];
+  return Number(nextNum) - 1;
+}
+
+export function renderPaginationElements(data, onPaginate) {
+  const pageCount = Math.ceil(data.count / 100);
+  $("#pagination-buttons").show();
+  $("#num-pages").text(`${getCurrentPageNum(data, pageCount)}/${pageCount}`);
+
+  if (data.next_page) {
+    $("#next-page-button").prop("disabled", false);
+    $("#next-page-button").click((e) => {
+      e.preventDefault();
+      onPaginate(data.next_page);
+    });
+  } else {
+    $("#next-page-button").prop("disabled", true);
+  }
+
+  if (data.previous_page) {
+    $("#prev-page-button").prop("disabled", false);
+    $("#prev-page-button").click((e) => {
+      e.preventDefault();
+      onPaginate(data.previous_page);
+    });
+  } else {
+    $("#prev-page-button").prop("disabled", true);
   }
 }
 
@@ -56,33 +105,33 @@ export function renderFilterButtons(getUsers) {
   $("#filter-button").click((e) => {
     e.preventDefault();
     const lastLoginBefore = $("#last-login-before").val();
-    const lastLoginChecked = $("#last-login-check").prop("checked");
+    // const lastLoginChecked = $("#last-login-check").prop("checked");
 
-    const maxPublicComments = $("#max-public-comments").val();
-    const publicCommentsBefore = $("#public-comments-before").val();
-    const publicCommentsChecked = $("#public-comments-check").prop("checked");
+    // const maxPublicComments = $("#max-public-comments").val();
+    // const publicCommentsBefore = $("#public-comments-before").val();
+    // const publicCommentsChecked = $("#public-comments-check").prop("checked");
 
     const paidSeats = isAdmin ? $("#paid-seats").prop("checked") : true;
 
     getUsers({
-      lastLoginBefore: lastLoginChecked ? lastLoginBefore : "",
-      maxPublicComments: publicCommentsChecked ? maxPublicComments : "",
-      publicCommentsBefore: publicCommentsChecked ? publicCommentsBefore : "",
+      lastLoginBefore: lastLoginBefore,
+      // maxPublicComments: publicCommentsChecked ? maxPublicComments : "",
+      // publicCommentsBefore: publicCommentsChecked ? publicCommentsBefore : "",
       paidSeats,
     });
   });
 
   $("#clear-filter-button").click((e) => {
     e.preventDefault();
-    $("#last-login-check").prop("checked", false);
-    $("#public-comments-check").prop("checked", false);
+    // $("#last-login-check").prop("checked", false);
+    // $("#public-comments-check").prop("checked", false);
 
     if (isAdmin) $("#paid-seats").prop("checked", false);
 
     getUsers({
-      maxPublicComments: "",
+      // maxPublicComments: "",
       lastLoginBefore: "",
-      publicCommentsBefore: "",
+      // publicCommentsBefore: "",
       paidSeats: !isAdmin,
     });
   });
@@ -96,9 +145,9 @@ export function renderUserHeaders() {
   $("#content").html(html);
 }
 
-export function renderUserInfo(client, users, comments, filters) {
+export function renderUserInfo(client, users, filters) {
   const users_data = {
-    users: formatUsers(users, comments, filters),
+    users: formatUsers(users),
   };
 
   const source = $("#users-template").html();
@@ -106,6 +155,11 @@ export function renderUserInfo(client, users, comments, filters) {
   const html = template(users_data);
   $("#content").html(html);
   $("#loading-users").text("");
+  $("#export-csv").show();
+  $("#export-csv").click((e) => {
+    e.preventDefault();
+    exportUsers(client, filters);
+  });
   if (!users_data.users.length) {
     $("#no-users-msg").text("No paid users match filters above");
   }

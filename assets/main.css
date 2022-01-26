@@ -95,6 +95,13 @@ h5 {
   font-style: italic;
 }
 
+.export-button {
+  position: absolute;
+  text-align: right;
+  bottom: -35px;
+  width: 100%;
+}
+
 .user-table {
   display: flex;
   justify-content: center;
@@ -128,4 +135,36 @@ th {
 
 .check {
   margin-right: 10px;
+}
+
+.hide-pagination {
+  display: none;
+}
+
+.pagination-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 40px;
+}
+
+.pagination-button {
+  background-color: transparent;
+  text-decoration: underline;
+  color: darkblue;
+  border: none;
+  margin: 0px 10px;
+  width: 150px;
+}
+
+.pagination-button:hover {
+  color: blue;
+}
+
+.pagination-button:disabled {
+  color: lightgray;
+}
+
+.invisible-buttons {
+  display: none;
 }

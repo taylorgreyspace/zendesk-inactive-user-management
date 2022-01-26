@@ -1,13 +1,18 @@
 import { handleAsyncPagination } from "./apiUtils.js";
-import { filterUsers } from "./formatUtils.js";
-import { renderUserInfo, renderError } from "./render.js";
+import { filterUsers, formatUsers } from "./formatUtils.js";
+import {
+  renderUserInfo,
+  renderError,
+  renderPaginationElements,
+} from "./render.js";
 
-export async function requestUserInfo(client, filters) {
+export async function requestUserInfo(client, filters, url) {
   $("#loading-users").text("Loading users...");
   $("#no-users-msg").text("");
 
+  const roleFilter = filters.paidSeats ? "role[]=admin&role[]=agent&" : "";
   const settings = {
-    url: "/api/v2/users.json?page[size]=100",
+    url: url || `/api/v2/users.json?${roleFilter}`,
     type: "GET",
     dataType: "json",
   };
@@ -16,81 +21,148 @@ export async function requestUserInfo(client, filters) {
     return data.users.filter((user) => filterUsers(user, filters));
   }
 
-  function handleSuccess(users) {
-    if (users.length > 0) {
-      requestTicketInfo(client, users, filters);
-    } else {
-      renderUserInfo(client, users, [], filters);
+  function handlePagination(url) {
+    requestUserInfo(client, filters, url);
+  }
+
+  try {
+    const data = await client.request(settings);
+    console.log("page", data, transformUsers(data));
+    renderUserInfo(client, transformUsers(data), filters);
+    renderPaginationElements(data, handlePagination);
+  } catch (err) {
+    console.log("error", err);
+    renderError(err);
+  }
+}
+
+export async function exportUsers(client, filters) {
+  $("#loading-users").text("Exporting users...");
+
+  const roleFilter = filters.paidSeats ? "role[]=admin&role[]=agent&" : "";
+  const settings = {
+    url: `/api/v2/users.json?${roleFilter}`,
+    type: "GET",
+    dataType: "json",
+  };
+
+  function transformUsers(data) {
+    return data.users.filter((user) => filterUsers(user, filters));
+  }
+
+  function handleSuccess(result, error) {
+    if (error) {
+      console.log("error", error);
+      return;
     }
+    const users = formatUsers(result);
+    exportToCsv(users);
+    $("#loading-users").text("");
   }
 
   handleAsyncPagination(client, settings, transformUsers, handleSuccess, true);
 }
 
-async function requestTicketInfo(client, users, filters) {
-  const settings = {
-    url: "/api/v2/tickets.json?page[size]=100",
-    type: "GET",
-    dataType: "json",
-    sortBy: "updated_at",
-    sortOrder: "desc",
-  };
+function exportToCsv(users) {
+  const header = "id,name,role,role type,last login,url\n";
+  const csv =
+    header +
+    users
+      .map(
+        (user) =>
+          `${user.id},"${user.name}",${user.role},${user.role_type},"${user.last_login_at}",${user.user_href}`
+      )
+      .join("\n");
 
-  function transformTickets(data) {
-    return data.tickets.map((t) => t.id);
+  console.log("csv", csv);
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const today = new Date();
+  const date = today.toLocaleDateString().replace(/\//g, "-");
+  const filename = `inactive_users_${date}.csv`;
+  if (navigator.msSaveBlob) {
+    // IE 10+
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      // feature detection
+      // Browsers that support HTML5 download attribute
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   }
-
-  function handleSuccess(ticketIds) {
-    const commentRequests = ticketIds.map((ticketId) =>
-      requestCommentsForTicket(client, ticketId)
-    );
-    Promise.all(commentRequests)
-      .then((c) => {
-        const comments = c.reduce((acc, comment) => acc.concat(comment), []);
-        renderUserInfo(client, users, comments, filters);
-      })
-      .catch((err) => {
-        renderError(err);
-      });
-  }
-
-  handleAsyncPagination(
-    client,
-    settings,
-    transformTickets,
-    handleSuccess,
-    true
-  );
 }
 
-async function requestCommentsForTicket(client, ticketID) {
-  const settings = {
-    url: `/api/v2/tickets/${ticketID}/comments.json?page[size]=100`,
-    type: "GET",
-    dataType: "json",
-  };
+// async function requestTicketInfo(client, users, filters) {
+//   const settings = {
+//     url: "/api/v2/tickets.json?page[size]=100",
+//     type: "GET",
+//     dataType: "json",
+//     sortBy: "updated_at",
+//     sortOrder: "desc",
+//   };
 
-  function transformComments(data) {
-    return data.comments;
-  }
+//   function transformTickets(data) {
+//     return data.tickets.map((t) => t.id);
+//   }
 
-  function handleSuccess(comments, error) {
-    return new Promise((resolve, reject) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(comments);
-      }
-    });
-  }
+//   function handleSuccess(ticketIds) {
+//     const commentRequests = ticketIds.map((ticketId) =>
+//       requestCommentsForTicket(client, ticketId)
+//     );
+//     Promise.all(commentRequests)
+//       .then((c) => {
+//         const comments = c.reduce((acc, comment) => acc.concat(comment), []);
+//         renderUserInfo(client, users, comments, filters);
+//       })
+//       .catch((err) => {
+//         renderError(err);
+//       });
+//   }
 
-  return handleAsyncPagination(
-    client,
-    settings,
-    transformComments,
-    handleSuccess
-  );
-}
+//   handleAsyncPagination(
+//     client,
+//     settings,
+//     transformTickets,
+//     handleSuccess,
+//     true
+//   );
+// }
+
+// async function requestCommentsForTicket(client, ticketID) {
+//   const settings = {
+//     url: `/api/v2/tickets/${ticketID}/comments.json?page[size]=100`,
+//     type: "GET",
+//     dataType: "json",
+//   };
+
+//   function transformComments(data) {
+//     return data.comments;
+//   }
+
+//   function handleSuccess(comments, error) {
+//     return new Promise((resolve, reject) => {
+//       if (error) {
+//         reject(error);
+//       } else {
+//         resolve(comments);
+//       }
+//     });
+//   }
+
+//   return handleAsyncPagination(
+//     client,
+//     settings,
+//     transformComments,
+//     handleSuccess
+//   );
+// }
 
 export async function updateUser(client, userID, userUpdate, filters) {
   const settings = {

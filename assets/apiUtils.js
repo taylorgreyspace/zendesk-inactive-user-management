@@ -1,3 +1,5 @@
+import { renderError } from "./render.js";
+
 export async function handleAsyncPagination(
   client,
   settings,
@@ -13,7 +15,7 @@ export async function handleAsyncPagination(
     try {
       const data = await client.request({ ...settings, url });
       result = result.concat(transformData(data));
-      url = data.meta.has_more ? data.links.next : undefined;
+      url = data.next_page ? data.next_page : undefined;
     } catch (err) {
       error = err;
       url = undefined;
@@ -21,7 +23,7 @@ export async function handleAsyncPagination(
   }
 
   if (shouldDisplayErr && error) {
-    return showError(error);
+    return renderError(error);
   } else {
     return handleSuccess(result, error);
   }

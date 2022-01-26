@@ -32,12 +32,12 @@
         </div>
 
         <div class="label-line">
-          <input name="last-login-check"  id="last-login-check" type="checkbox" class="check" checked />
+          <!-- <input name="last-login-check"  id="last-login-check" type="checkbox" class="check" checked /> -->
           <label for="last-login-before">Last login before</label>
           <input name="last-login-before" id="last-login-before" type="date" value={{last_login_before}} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" placeholder="YYYY-MM-DD" />
         </div>
 
-        <div class="label-line">
+        <!-- <div class="label-line">
           <input name="public-comments-check"  id="public-comments-check" class="check" type="checkbox" />
           <label for="max-public-comments">Less than</label>
           <input name="max-public-comments" id="max-public-comments" type="number" value={{max_public_comments}} class="number-input" />
@@ -45,7 +45,7 @@
           
           <label for="public-comments-before">public comments since</label>
           <input name="public_comments_before" id="public-comments-before" type="date" value={{public_comments_before}} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" placeholder="YYYY-MM-DD" />
-        </div>
+        </div> -->
 
         <div class="buttons">
           <button type="button" id="filter-button" class="filter-button">Filter</button>
@@ -54,6 +54,7 @@
       </form>
 
       <div id="loading-users" class="loading"></div>
+      <button id="export-csv" class="hide-pagination change-button export-button">Export results to CSV</button>
     </div>
     </div>
   </script>
@@ -68,8 +69,8 @@
             <th>Role</th>
             <th>Role Type</th>
             <th class="higher-width">Last Login</th>
-            <th>Public Comments</th>
-            <th class="higher-width">Last Comment</th>
+            <!-- <th>Public Comments</th> -->
+            <!-- <th class="higher-width">Last Comment</th> -->
             <th class="center higher-width">Actions</th>
           </tr>
         </thead>
@@ -81,8 +82,8 @@
             <td>{{role}}</td>
             <td>{{role_type}}</td>
             <td>{{last_login_at}}</td>
-            <td class="center">{{number_public_comments}}</td>
-            <td>{{last_comment_at}}</td>
+            <!-- <td class="center">{{number_public_comments}}</td> -->
+            <!-- <td>{{last_comment_at}}</td> -->
             <td>
               <!-- <button id="change-to-light-{{id}}" class="change-to-light change-button" type="button">Light Agent</button> -->
               <button id="change-to-end-{{id}}" class="change-to-end change-button" type="button">Change to End-User</button>
@@ -93,6 +94,17 @@
       </table>
     </div>
     <div id="no-users-msg" class="center"></div>
+    <div class="hide-pagination" id="pagination-buttons">
+      <div class="pagination-buttons">
+        <button type="button" id="prev-page-button" class="pagination-button" disabled>
+          Previous page
+        </button>
+        <div id="num-pages"></div>
+        <button type="button" id="next-page-button" class="pagination-button" disabled>
+          Next page
+        </button>
+      </div>
+    </div>
   </script>
     
   <script id="error-template" type="text/x-handlebars-template">

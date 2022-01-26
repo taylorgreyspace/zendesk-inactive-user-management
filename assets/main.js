@@ -16,7 +16,7 @@ filters = {
 
 $(function () {
   const client = ZAFClient.init();
-  console.log("init init");
+  console.log("init init init");
   renderFilterForm();
   renderUserHeaders();
 
