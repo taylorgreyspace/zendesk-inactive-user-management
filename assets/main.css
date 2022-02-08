@@ -31,20 +31,15 @@ h5 {
   padding: 10px 20px;
   border-radius: 0.375rem;
   border: 1px grey solid;
-  min-width: 42rem;
   margin-bottom: 30px;
 }
 
-.filters-top {
+.filters-form {
   display: flex;
-  justify-content: space-between;
-  align-content: center;
-  margin: 10px 0px;
 }
 
 .filter-show-button {
-  margin-right: 10px;
-  margin-bottom: 3px;
+  margin: 6px 20px 30px 0px;
   font-size: small;
   background-color: transparent;
   border: none;
@@ -58,13 +53,12 @@ h5 {
 }
 
 .label-line {
-  margin: 10px 0px;
+  margin: 6px 20px 0px 0px;
 }
 
 .buttons {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
 }
 
 .change-button,
@@ -97,9 +91,8 @@ h5 {
 
 .export-button {
   position: absolute;
-  text-align: right;
-  bottom: -35px;
-  width: 100%;
+  right: 2rem;
+  top: 2rem;
 }
 
 .user-table {

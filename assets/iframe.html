@@ -17,14 +17,11 @@
 
   <script id="filter-form-template" type="text/x-handlebars-template"> 
     <div class="filters-container">
-      <div class="filters-box">
-      <div class="filters-top">
-        <h5>Filters</h5>
-        <button class="filter-show-button" id="toggle-filters" type="button">Hide filters</button>
-      </div>
-      
-      <form id="filters-form">
-        <div class="label-line" id="paid-seats-label">
+      <button class="filter-show-button" id="toggle-filters" type="button">Hide filters</button>
+
+      <div class="filters-box" id="filters-form">      
+      <form  class="filters-form">
+        <div id="paid-seats-label">
          <label for="paid-seats">Show paid seats only</label>
          <input name="paid-seats"  id="paid-seats" type="checkbox" checked />
         </div>
@@ -41,8 +38,9 @@
       </form>
 
       <div id="loading-users" class="loading"></div>
-      <button id="export-csv" class="hide-pagination change-button export-button">Export results to CSV</button>
     </div>
+    
+    <button id="export-csv" class="hide-pagination  filter-button export-button">Export results to CSV</button>
     </div>
   </script>
 
